@@ -1,7 +1,7 @@
 # project custom
 dist/
 ff
-
+release.sh
 
 
 # Binaries for programs and plugins
