@@ -20,7 +20,9 @@
 
 package main
 
-import "github.com/jojomi/ff/cmd"
+import (
+	"github.com/jojomi/ff/cmd"
+)
 
 func main() {
 	cmd.Execute()

@@ -35,9 +35,14 @@ import (
 )
 
 var (
+	flagVersion   bool
 	flagVerbose   bool
 	flagCfgFile   string
 	flagFirstOnly bool
+
+	version = "local"
+	commit  = "no-commit"
+	date    = "now"
 )
 
 // This represents the base command when called without any subcommands
@@ -50,6 +55,12 @@ var RootCmd = &cobra.Command{
 const highlight = "\033[1;92m%s\033[0m"
 
 func rootCmdHandler(cmd *cobra.Command, args []string) {
+	// catch version check
+	if flagVersion {
+		fmt.Printf("version %s, build from commit %s at %s\n", version, commit, date)
+		os.Exit(0)
+	}
+
 	if len(args) < 1 {
 		log.Fatal("no search given")
 	}
@@ -146,6 +157,7 @@ func init() {
 	f.StringVarP(&flagCfgFile, "config", "c", "", "config file (default is $HOME/.ff/config.yml)")
 	f.BoolVarP(&flagFirstOnly, "first-only", "f", false, "print only first element")
 	f.BoolVarP(&flagVerbose, "verbose", "v", false, "print search details")
+	f.BoolVarP(&flagVersion, "version", "", false, "print version details")
 }
 
 // initConfig reads in config file and ENV variables if set.
