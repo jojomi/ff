@@ -1,3 +1,9 @@
+# project custom
+dist/
+ff
+
+
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
