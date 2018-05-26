@@ -1,4 +1,3 @@
-project_name: ff
 release:
   github:
     owner: jojomi
@@ -23,13 +22,12 @@ builds:
   - "6"
   - "7"
   main: .
-  ldflags: -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
   binary: ff
+  ldflags: -s -w -X cmd.version={{.Version}} -X cmd.commit={{.Commit}} -X cmd.date={{.Date}}
   env:
   - CGO_ENABLED=0
 archive:
-  name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end 
-}}'
+  name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
   format: tar.gz
   format_overrides:
     - goos: windows
@@ -53,9 +51,8 @@ archive:
   - README*
   - changelog*
   - CHANGELOG*
-fpm:
-  name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end 
-}}'
+nfpm:
+  name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
   bindir: /usr/local/bin
   formats:
     - deb
