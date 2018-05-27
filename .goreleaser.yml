@@ -23,7 +23,7 @@ builds:
   - "7"
   main: .
   binary: ff
-  ldflags: -s -w -X cmd.version={{.Version}} -X cmd.commit={{.Commit}} -X cmd.date={{.Date}}
+  ldflags: -s -w -X github.com/jojomi/ff/cmd.version={{.Version}} -X github.com/jojomi/ff/cmd.commit={{.Commit}} -X github.com/jojomi/ff/cmd.date={{.Date}}
   env:
   - CGO_ENABLED=0
 archive:
