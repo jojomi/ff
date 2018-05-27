@@ -1,0 +1,29 @@
+# https://github.com/golangci/golangci-lint
+# possible values: https://github.com/golangci/golangci-lint/blob/master/.golangci.example.yml
+run:
+  deadline: 30s
+  tests: true
+  
+linters-settings:
+  govet:
+    check-shadowing: true
+  golint:
+    min-confidence: 0
+  gocyclo:
+    min-complexity: 20
+  maligned:
+    suggest-new: true
+  dupl:
+    threshold: 100
+  goconst:
+    min-len: 2
+    min-occurrences: 2
+  gofmt:
+    simplify: true
+
+linters:
+  enable-all: true
+
+issues:
+  exclude:
+    - should have a package comment
