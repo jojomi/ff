@@ -45,10 +45,10 @@ var (
 	date    = "now"
 )
 
-// This represents the base command when called without any subcommands
+// RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use:   "ff",
-	Short: "find folder that matches the given fuzzy search",
+	Short: "find folders that match the given fuzzy search pattern",
 	Run:   rootCmdHandler,
 }
 
@@ -143,6 +143,7 @@ func getSubDirs(paths []string) []string {
 	return result
 }
 
+// Execute runs this command
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
 		fmt.Println(err)
