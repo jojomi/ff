@@ -28,10 +28,11 @@ import (
 	"path/filepath"
 
 	homedir "github.com/mitchellh/go-homedir"
+	"github.com/pkg/errors"
 	"github.com/sahilm/fuzzy"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 )
 
 var (
@@ -45,7 +46,7 @@ var (
 	date    = "now"
 )
 
-// RootCmd represents the base command when called without any subcommands
+// RootCmd represents the base command when called without any subcommands.
 var RootCmd = &cobra.Command{
 	Use:   "ff",
 	Short: "find folders that match the given fuzzy search pattern",
@@ -77,7 +78,10 @@ func rootCmdHandler(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	subDirs := getSubDirs(paths)
+	subDirs, err := getSubDirs(paths)
+	if err != nil {
+		panic(err)
+	}
 	if flagVerbose {
 		fmt.Println("Folders in search paths:")
 		for _, s := range subDirs {
@@ -86,15 +90,16 @@ func rootCmdHandler(cmd *cobra.Command, args []string) {
 	}
 
 	matches := fuzzy.Find(search, subDirs)
+	interactive := term.IsTerminal(int(os.Stdout.Fd()))
 
-	interactive := terminal.IsTerminal(int(os.Stdout.Fd()))
 	if flagVerbose {
 		fmt.Println("Results:")
 	}
+
 	for _, match := range matches {
 		for i, m := range match.Str {
 			if interactive && contains(i, match.MatchedIndexes) {
-				fmt.Print(fmt.Sprintf(highlight, string(m)))
+				fmt.Printf(highlight, string(m))
 			} else {
 				fmt.Print(string(m))
 			}
@@ -112,10 +117,11 @@ func contains(needle int, haystack []int) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
-func getSubDirs(paths []string) []string {
+func getSubDirs(paths []string) ([]string, error) {
 	result := []string{}
 	var (
 		files []os.FileInfo
@@ -124,13 +130,16 @@ func getSubDirs(paths []string) []string {
 	for _, path := range paths {
 		path, err = homedir.Expand(path)
 		if err != nil {
-			// TODO print on stderr
+			return []string{}, errors.Wrap(err, "could not expand home dir")
+		}
+
+		if _, err = os.Stat(path); os.IsNotExist(err) {
 			continue
 		}
+
 		files, err = ioutil.ReadDir(path)
 		if err != nil {
-			// TODO print on stderr
-			continue
+			return []string{}, errors.Wrapf(err, "could not list files in %s", path)
 		}
 
 		for _, f := range files {
@@ -140,10 +149,10 @@ func getSubDirs(paths []string) []string {
 			result = append(result, filepath.Join(path, f.Name()))
 		}
 	}
-	return result
+
+	return result, nil
 }
 
-// Execute runs this command
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
 		fmt.Println(err)
