@@ -17,7 +17,7 @@ You need a Go environment setup, then:
 
     go get -u github.com/jojomi/ff
 
-`ff` is built using the current Go compiler version (1.10.2 at the time of writing), but may work with older versions too.
+`ff` is built using the current Go compiler version (1.16 at the time of writing), but may work with older versions too.
 
 ## Configuration
 
